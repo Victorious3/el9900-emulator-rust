@@ -16,17 +16,18 @@ impl TMP91C016 {
     }
 }
 
-impl Package for TMP91C016 {
-    
-    fn reset(&mut self) {
-        self.core.reset(self);
-    }
-
+impl Memory for TMP91C016 {
     fn read_byte(&mut self, addr: u32) -> u8 {
         return self.mmu.read_byte(addr)
     }
 
     fn write_byte(&mut self, addr: u32, value: u8) {
         self.mmu.write_byte(addr, value);
+    }
+}
+
+impl Package for TMP91C016 {
+    fn reset(&mut self) {
+        self.core.reset(self);
     }
 }
