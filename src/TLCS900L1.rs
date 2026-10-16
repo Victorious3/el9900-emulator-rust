@@ -85,9 +85,11 @@ impl Core for TLCS900L1 {
 		unsafe { mem::zeroed() }
 	}
 	
-	fn reset(&mut self, mem: &mut MMU) {
+	fn reset(&mut self, package: &mut dyn Package) {
 		// SYSM IFF2 IFF1 IFF0 MAX RFP2 RFP1 RFP0
 		// S Z 0 H 0 V N C 
 		self.SR = 0b11111000_00000000;
+		// TODO
+		package.write_byte(0, 0);
 	}
 }

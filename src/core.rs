@@ -1,7 +1,7 @@
 pub trait Core {
     fn new() -> Self;
     /// Resets the cpu to its default state
-    fn reset(&mut self, mem: &mut MMU);
+    fn reset(&mut self, package: &mut dyn Package);
 }
 
 pub trait Package {

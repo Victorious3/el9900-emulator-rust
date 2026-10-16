@@ -19,7 +19,7 @@ impl TMP91C016 {
 impl Package for TMP91C016 {
     
     fn reset(&mut self) {
-        self.core.reset(&mut self.mmu);
+        self.core.reset(self);
     }
 
     fn read_byte(&mut self, addr: u32) -> u8 {
