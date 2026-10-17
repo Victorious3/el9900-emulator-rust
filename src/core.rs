@@ -1,10 +1,10 @@
 pub trait Core {
     fn new() -> Self;
     /// Resets the cpu to its default state
-    fn reset(&mut self, memory: &mut dyn Memory);
+    fn reset(&mut self);
 }
 
-pub trait Package {
+pub trait Package: Memory {
     /// Resets the microcontroller to its default state
     fn reset(&mut self);
 }

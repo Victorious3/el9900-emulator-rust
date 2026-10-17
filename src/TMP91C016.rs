@@ -1,18 +1,21 @@
 
+use std::rc::Rc;
+
 use crate::core::*;
 use crate::TLCS900L1::TLCS900L1;
 
-struct TMP91C016 {
+
+pub struct TMP91C016 {
     core: TLCS900L1,
     mmu: MMU
 }
 
 impl TMP91C016 {
-    pub fn new() -> Self {
-        TMP91C016 {
-            core: TLCS900L1::new(),
-            mmu: MMU::new()
-        }
+    pub fn new() -> Rc<Self> {
+        Rc::new_cyclic(|package| TMP91C016 {
+            mmu: MMU::new(),
+            core: TLCS900L1::new(package.clone())
+        })
     }
 }
 
@@ -28,6 +31,10 @@ impl Memory for TMP91C016 {
 
 impl Package for TMP91C016 {
     fn reset(&mut self) {
-        self.core.reset(self);
+        self.core.reset();
     }
+}
+
+pub fn new() -> Rc<TMP91C016> {
+    TMP91C016::new()
 }

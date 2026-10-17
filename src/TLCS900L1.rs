@@ -1,7 +1,9 @@
-use std::mem;
+use std::rc::{Rc, Weak};
 use crate::core::*;
 
 pub struct TLCS900L1 {
+
+	pub(crate) package: Weak<dyn Package>,
     /*  
 		General purpose bank registers
 		
@@ -80,16 +82,31 @@ pub struct TLCS900L1 {
     INTNEST: u16,
 }
 
-impl Core for TLCS900L1 {
-	fn new() -> Self {
-		unsafe { mem::zeroed() }
+impl TLCS900L1 {
+	pub fn new(package: Weak<dyn Package>) -> Self {
+		Self {
+			package: package,
+			bank: [0; 0x40],
+			general: [0; 0x10],
+			SR: 0,
+			FS: 0,
+			PC: 0,
+			DMA_source: [0; 4],
+			DMA_dest: [0; 4],
+			DMA_counter: [0; 4],
+			DMA_mode: [0; 4],
+			INTNEST: 0
+		}
 	}
 	
-	fn reset(&mut self, mem: &mut dyn Memory) {
+	pub fn reset(&mut self) {
+		let mut package = self.package.upgrade().unwrap();
+		let package = Rc::get_mut(&mut package).unwrap();
+
 		// SYSM IFF2 IFF1 IFF0 MAX RFP2 RFP1 RFP0
 		// S Z 0 H 0 V N C 
 		self.SR = 0b11111000_00000000;
 		// Read reset vector
-		self.PC = mem.read_dword(0x0FFFF00);
+		self.PC = package.read_dword(0x0FFFF00);
 	}
 }
